@@ -1,6 +1,6 @@
 # JobMatchAI
 
-JobMatchAI is a Node.js application that automates job matching and evaluation processes using AI services (Deepseek & ChatGPT), and Google Sheets integration.
+JobMatchAI is a Node.js application that automates job matching and evaluation. It scrapes LinkedIn job postings via Apify, evaluates each job against your candidate profile using AI (DeepSeek via OpenRouter, optionally ChatGPT), and writes the results to a Google Sheet.
 
 ![Workflow Overview](./JobMatchAI-v1.png "Automated Job Search Workflow")
 
@@ -8,9 +8,9 @@ JobMatchAI is a Node.js application that automates job matching and evaluation p
 
 - Node.js (v16 or higher)
 - NPM or Yarn
-- Google Cloud Service Account credentials for accessing Google Sheets
-- ChatGPT or Deep-seek API Key
-- Apify API Key
+- [OpenRouter](https://openrouter.ai/) API key (for DeepSeek), and/or an OpenAI API key (for GPT)
+- [Apify](https://apify.com/) API key — the scraper uses [curious_coder/linkedin-jobs-scraper](https://apify.com/curious_coder/linkedin-jobs-scraper), pay-per-result ($0.001/job, billed from your Apify account credit)
+- Google Cloud service account with the Sheets API enabled
 
 ## Installation
 
@@ -18,7 +18,7 @@ JobMatchAI is a Node.js application that automates job matching and evaluation p
 
    ```bash
    git clone https://github.com/EricTechPro/JobMatchAI
-   cd jobmatchai
+   cd JobMatchAI
    ```
 
 2. Install dependencies:
@@ -27,20 +27,39 @@ JobMatchAI is a Node.js application that automates job matching and evaluation p
    npm install
    ```
 
-3. Set up environment variables:
-   Create a `.env` file in the root directory and add the following:
+3. Set up environment variables — create a `.env` file in the root directory:
 
    ```env
    APIFY_API_KEY=[apify api key]
    SPREADSHEET_ID=[google sheet spreadsheet id]
-   DEEPSEEK_API_KEY=[deep-seek ai api key]
-   OPENAI_API_KEY=[open ai api key]
-   USE_GPT=[true or false]
-   USE_DEEPSEEK=[true or false]
-   DEBUG_MODE=[true or false]
+   OPENROUTER_API_KEY=[openrouter api key, used for deepseek]
+   OPENAI_API_KEY=[openai api key, only needed if USE_GPT=true]
+   USE_GPT=false
+   USE_DEEPSEEK=true
+   DEBUG_MODE=false
    ```
 
-4. Modify the Apify LinkedIn Job Scraper API Input from https://console.apify.com/actors/BHzefUZlZRKWxkTck/input and update "apify_input.json"
+4. Set up Google Sheets access:
+   - Create a service account in the [Google Cloud Console](https://console.cloud.google.com/iam-admin/serviceaccounts) and download a JSON key.
+   - Save it as `google_service_account_credentials.json` in the project root.
+   - Enable the [Google Sheets API](https://console.cloud.google.com/apis/library/sheets.googleapis.com) for the project.
+   - Share your spreadsheet with the service account's `client_email` (Editor access).
+
+5. Create `candidate_summary.txt` in the project root with your resume/profile summary — this is what jobs are matched against.
+
+6. Configure the job search in `apify_input.json`. Build a search on [LinkedIn Jobs](https://www.linkedin.com/jobs/search/) (use an incognito window), copy the URL, and set the result count (minimum 10):
+
+   ```json
+   {
+       "urls": [
+           "https://www.linkedin.com/jobs/search/?keywords=Security%20Engineer&location=United%20States&f_WT=2&f_TPR=r604800"
+       ],
+       "count": 25,
+       "scrapeCompany": false
+   }
+   ```
+
+   Useful URL parameters: `f_WT=2` (remote), `f_TPR=r604800` (past week), `f_TPR=r86400` (past 24h).
 
 ## Usage
 
@@ -49,6 +68,19 @@ Start the application:
 ```bash
 node index.js
 ```
+
+Each run scrapes jobs, saves them to a dated `*-jobs.json` file, skips jobs already present in the sheet (deduplicated by job link), evaluates new ones with AI, and appends them to the sheet.
+
+Set `DEBUG_MODE=true` in `.env` to replay a previously saved jobs file instead of paying for a new scrape (the filename is set in `index.js`).
+
+## Sensitive files
+
+The following files contain secrets or personal data and are excluded from the repository via `.gitignore` — never commit them:
+
+- `.env` — API keys
+- `google_service_account_credentials.json` — Google private key
+- `candidate_summary.txt` — your resume
+- `*-jobs.json` — scraped job data
 
 ## Dependencies
 

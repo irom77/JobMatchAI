@@ -14,7 +14,7 @@ async function main() {
     try {
         let jobs;
         if (useDebugMode) {
-            jobs = readJobsFromFile("2025-01-27-jobs.json")
+            jobs = readJobsFromFile("2026-07-06-jobs.json")
         } else {
             // Step 1: Scrape jobs
             jobs = await scrapeJobs();

@@ -1,14 +1,22 @@
 const OpenAI = require("openai");
 const { log } = require('./loggingService');
 
+// DeepSeek via OpenRouter
 const deepseekClient = new OpenAI({
-    baseURL: "https://api.deepseek.com",
-    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: "https://openrouter.ai/api/v1",
+    apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-const openaiClient = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
+// Lazily created so a missing OPENAI_API_KEY doesn't crash when USE_GPT=false
+let openaiClient;
+function getOpenaiClient() {
+    if (!openaiClient) {
+        openaiClient = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+    }
+    return openaiClient;
+}
 
 // Helper to generate job summary prompt
 function generateJobSummaryPrompt(jobData) {
@@ -59,7 +67,7 @@ async function evaluateJobMatch(jobData, candidateSummary) {
     if (useGPT) {
         try {
             // Generate job summary with GPT
-            const gptSummaryResponse = await openaiClient.chat.completions.create({
+            const gptSummaryResponse = await getOpenaiClient().chat.completions.create({
                 model: "gpt-4-turbo",
                 messages: [
                     {
@@ -71,7 +79,7 @@ async function evaluateJobMatch(jobData, candidateSummary) {
             results.gptJobSummary = gptSummaryResponse.choices[0]?.message?.content.trim() || "";
 
             // Generate job match percentage with GPT
-            const gptMatchResponse = await openaiClient.chat.completions.create({
+            const gptMatchResponse = await getOpenaiClient().chat.completions.create({
                 model: "gpt-3.5-turbo",
                 messages: [
                     {
@@ -92,7 +100,7 @@ async function evaluateJobMatch(jobData, candidateSummary) {
         try {
             // Generate job summary with DeepSeek
             const deepSeekSummaryResponse = await deepseekClient.chat.completions.create({
-                model: "deepseek-chat",
+                model: "deepseek/deepseek-chat",
                 messages: [
                     {
                         role: "user",
@@ -104,7 +112,7 @@ async function evaluateJobMatch(jobData, candidateSummary) {
 
             // Generate job match percentage with DeepSeek
             const deepSeekMatchResponse = await deepseekClient.chat.completions.create({
-                model: "deepseek-chat",
+                model: "deepseek/deepseek-chat",
                 messages: [
                     {
                         role: "user",
