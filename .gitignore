@@ -3,3 +3,6 @@
 google_service_account_credentials.json
 candidate_summary.txt
 *-jobs.json
+
+candidate_summary.md
+.vscode/
