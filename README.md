@@ -1,6 +1,6 @@
 # JobMatchAI
 
-JobMatchAI is a Node.js application that automates job matching and evaluation. It scrapes LinkedIn job postings via Apify, evaluates each job against your candidate profile using AI (DeepSeek via OpenRouter, optionally ChatGPT), and writes the results to a Google Sheet.
+JobMatchAI is a Node.js application that automates job matching and evaluation. It scrapes job postings through a configured Apify actor, evaluates each job against your candidate profile using AI (DeepSeek via OpenRouter, optionally ChatGPT), and writes the results to a Google Sheet.
 
 ![Workflow Overview](./JobMatchAI-v1.png "Automated Job Search Workflow")
 
@@ -9,7 +9,7 @@ JobMatchAI is a Node.js application that automates job matching and evaluation. 
 - Node.js (v16 or higher)
 - NPM or Yarn
 - [OpenRouter](https://openrouter.ai/) API key (for DeepSeek), and/or an OpenAI API key (for GPT)
-- [Apify](https://apify.com/) API key — the scraper uses [curious_coder/linkedin-jobs-scraper](https://apify.com/curious_coder/linkedin-jobs-scraper), pay-per-result ($0.001/job, billed from your Apify account credit)
+- [Apify](https://apify.com/) API key — the configured scraper actor is pay-per-result (currently $0.001/job, billed from your Apify account credit)
 - Google Cloud service account with the Sheets API enabled
 
 ## Installation
@@ -47,19 +47,17 @@ JobMatchAI is a Node.js application that automates job matching and evaluation. 
 
 5. Create `candidate_summary.txt` in the project root with your resume/profile summary — this is what jobs are matched against.
 
-6. Configure the job search in `apify_input.json`. Build a search on [LinkedIn Jobs](https://www.linkedin.com/jobs/search/) (use an incognito window), copy the URL, and set the result count (minimum 10):
+6. Configure the job search in `apify_input.json`. Copy a job search URL from the service you use and set the result count (minimum 10):
 
    ```json
    {
        "urls": [
-           "https://www.linkedin.com/jobs/search/?keywords=Security%20Engineer&location=United%20States&f_WT=2&f_TPR=r604800"
+           "https://jobs.example.com/search?keywords=Security%20Engineer&location=United%20States"
        ],
        "count": 25,
        "scrapeCompany": false
    }
    ```
-
-   Useful URL parameters: `f_WT=2` (remote), `f_TPR=r604800` (past week), `f_TPR=r86400` (past 24h).
 
 ## Usage
 
@@ -78,10 +76,10 @@ Set `DEBUG_MODE=true` in `.env` to replay a previously saved jobs file instead o
 The `tailor-resume-for-job` Codex skill uses the read-only `candidate_summary.txt` as its source of candidate facts to create Markdown, plain-text, Word, and PDF resume versions for a specific posting. Identify the posting by direct URL, company and job title, or a saved jobs file, for example:
 
 ```text
-Use the tailor-resume-for-job skill for https://builtin.com/job/security-engineer-product/11580881
+Use the tailor-resume-for-job skill for https://jobs.example.com/posting/12345
 ```
 
-You can also say `Use the tailor-resume-for-job skill for the Senior Security Engineer posting at Example Corp in 2026-07-06-jobs.json.` The skill saves ATS-readable `.md`, `.txt`, `.docx`, and `.pdf` resume versions and their posting metadata in the gitignored `tailored-resumes/` folder, leaving existing job metadata unchanged. In WSL, it also mirrors those files to `C:\Users\irekr\Documents\JobMatchAI\tailored-resumes`. Before preparing an application, it checks the private application tracker and, when connected, Gmail for previous applications. It stops on a previously submitted job and warns before another application to the same company. If it cannot access the posting, provide its text. Candidate details and generated files are private and excluded from Git.
+You can also say `Use the tailor-resume-for-job skill for the Senior Security Engineer posting at Example Corp in 2026-07-06-jobs.json.` The skill saves ATS-readable `.md`, `.txt`, `.docx`, and `.pdf` resume versions and their posting metadata in the gitignored `tailored-resumes/` folder, leaving existing job metadata unchanged. In WSL, it also mirrors those files to the corresponding Windows folder. Before preparing an application, it checks the private application tracker and, when connected, Gmail for previous applications. It stops on a previously submitted job and warns before another application to the same company. If it cannot access the posting, provide its text. Candidate details and generated files are private and excluded from Git.
 
 ## Sensitive files
 
