@@ -3,6 +3,9 @@
 google_service_account_credentials.json
 candidate_summary.txt
 *-jobs.json
+/tailored-resumes/
+/tailored-cover-letters/
+/job-applications/
 
 candidate_summary.md
 .vscode/

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tailor Resume for Job"
+  short_description: "Create a truthful resume tailored to a saved job posting"
+  default_prompt: "Tailor my resume to this job posting and save it beside the posting metadata."

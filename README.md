@@ -73,6 +73,16 @@ Each run scrapes jobs, saves them to a dated `*-jobs.json` file, skips jobs alre
 
 Set `DEBUG_MODE=true` in `.env` to replay a previously saved jobs file instead of paying for a new scrape (the filename is set in `index.js`).
 
+### Tailor a resume to a job
+
+The `tailor-resume-for-job` Codex skill uses the read-only `candidate_summary.txt` as its source of candidate facts to create Markdown, plain-text, Word, and PDF resume versions for a specific posting. Identify the posting by direct URL, company and job title, or a saved jobs file, for example:
+
+```text
+Use the tailor-resume-for-job skill for https://builtin.com/job/security-engineer-product/11580881
+```
+
+You can also say `Use the tailor-resume-for-job skill for the Senior Security Engineer posting at Example Corp in 2026-07-06-jobs.json.` The skill saves ATS-readable `.md`, `.txt`, `.docx`, and `.pdf` resume versions and their posting metadata in the gitignored `tailored-resumes/` folder, leaving existing job metadata unchanged. In WSL, it also mirrors those files to `C:\Users\irekr\Documents\JobMatchAI\tailored-resumes`. Before preparing an application, it checks the private application tracker and, when connected, Gmail for previous applications. It stops on a previously submitted job and warns before another application to the same company. If it cannot access the posting, provide its text. Candidate details and generated files are private and excluded from Git.
+
 ## Sensitive files
 
 The following files contain secrets or personal data and are excluded from the repository via `.gitignore` — never commit them:
