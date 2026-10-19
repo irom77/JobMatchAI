@@ -79,7 +79,7 @@ The `tailor-resume-for-job` Codex skill uses the read-only `candidate_summary.tx
 Use the tailor-resume-for-job skill for https://jobs.example.com/posting/12345
 ```
 
-You can also say `Use the tailor-resume-for-job skill for the Senior Security Engineer posting at Example Corp in 2026-07-06-jobs.json.` The skill saves ATS-readable `.md`, `.txt`, `.docx`, and `.pdf` resume versions and their posting metadata in the gitignored `tailored-resumes/` folder, leaving existing job metadata unchanged. In WSL, it also mirrors those files to the corresponding Windows folder. Before preparing an application, it checks the private application tracker and, when connected, Gmail for previous applications. It stops on a previously submitted job and warns before another application to the same company. If it cannot access the posting, provide its text. Candidate details and generated files are private and excluded from Git.
+You can also say `Use the tailor-resume-for-job skill for the Senior Security Engineer posting at Example Corp in 2026-07-06-jobs.json.` The skill saves ATS-readable `.md`, `.txt`, `.docx`, and `.pdf` resume versions and their posting metadata in a per-job subfolder under the gitignored `tailored-resumes/` folder. Requested cover letters go in the same job folder. Existing job metadata remains unchanged. In WSL, the skill mirrors those files to the corresponding Windows folder. Before preparing an application, it checks the private application tracker and, when connected, Gmail for previous applications. It stops on a previously submitted job and warns before another application to the same company. If it cannot access the posting, provide its text. Candidate details and generated files are private and excluded from Git.
 
 ## Sensitive files
 
