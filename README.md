@@ -81,6 +81,8 @@ Use the tailor-resume-for-job skill for https://jobs.example.com/posting/12345
 
 You can also say `Use the tailor-resume-for-job skill for the Senior Security Engineer posting at Example Corp in 2026-07-06-jobs.json.` The skill saves ATS-readable `.md`, `.txt`, `.docx`, and `.pdf` resume versions and their posting metadata in a per-job subfolder under the gitignored `tailored-resumes/` folder. Requested cover letters go in the same job folder. Existing job metadata remains unchanged. In WSL, the skill mirrors those files to the corresponding Windows folder. Before preparing an application, it checks the private application tracker and, when connected, Gmail for previous applications. It stops on a previously submitted job and warns before another application to the same company. If it cannot access the posting, provide its text. Candidate details and generated files are private and excluded from Git.
 
+Project screenshots are kept locally in the gitignored `project-screenshots/` folder. They may be included in a requested cover letter when relevant, but only when you explicitly ask to use project screenshots.
+
 ## Sensitive files
 
 The following files contain secrets or personal data and are excluded from the repository via `.gitignore` — never commit them:
