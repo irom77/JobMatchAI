@@ -75,6 +75,8 @@ Set `DEBUG_MODE=true` in `.env` to replay a previously saved jobs file instead o
 
 The `tailor-resume-for-job` Codex skill uses the read-only `candidate_summary.txt` as its source of candidate facts to create Markdown, plain-text, Word, and PDF resume versions for a specific posting. Identify the posting by direct URL, company and job title, or a saved jobs file, for example:
 
+![Resume tailoring workflow: job posting and candidate profile inform tailored application materials, saved privately](./assets/resume-tailoring-workflow.svg)
+
 ```text
 Use the tailor-resume-for-job skill for https://jobs.example.com/posting/12345
 ```
