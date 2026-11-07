@@ -85,6 +85,10 @@ You can also say `Use the tailor-resume-for-job skill for the Senior Security En
 
 Project screenshots are kept locally in the gitignored `project-screenshots/` folder. They may be included in a requested cover letter when relevant, but only when you explicitly ask to use project screenshots.
 
+## Job Hunting References
+
+- [DEX](https://app.meetdex.ai/) — An AI talent agent that matches candidates with roles based on their experience and what they want next.
+
 ## Sensitive files
 
 The following files contain secrets or personal data and are excluded from the repository via `.gitignore` — never commit them:
